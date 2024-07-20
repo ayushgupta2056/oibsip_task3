@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TO-DO-LIST</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="wrapper">
+        <h1>TO-DO-LIST</h1>
+        <div class="task-input">
+            <input type="text" id="taskTitle" placeholder="Enter Task Title" required>
+            <textarea id="taskDescription" placeholder="Enter Task Description" required></textarea>
+            <button id="addTaskButton">Add Task</button>
+        </div>
+        <div class="task-section">
+            <h2>Pending Tasks</h2>
+            <table id="pendingTaskTable">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Added On</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="pendingTasks"></tbody>
+            </table>
+        </div>
+        <div class="task-section">
+            <h2>Completed Tasks</h2>
+            <table id="completedTaskTable">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Completed On</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="completedTasks"></tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+        document.getElementById('addTaskButton').addEventListener('click', function () {
+            const title = document.getElementById('taskTitle').value;
+            const description = document.getElementById('taskDescription').value;
+            const addedOn = new Date().toLocaleString();
+            
+            if (title === '' || description === '') {
+                alert('Please fill out the title and description fields.');
+                return;
+            }
+            
+            const pendingTasks = document.getElementById('pendingTasks');
+            const newRow = document.createElement('tr');
+            
+            newRow.innerHTML = `
+                <td>${title}</td>
+                <td>${description}</td>
+                <td>${addedOn}</td>
+                <td>
+                    <button class="complete-btn">Complete</button>
+                    <button class="edit-btn">Edit</button>
+                    <button class="delete-btn">Delete</button>
+                </td>
+            `;
+            
+            pendingTasks.appendChild(newRow);
+            
+            document.getElementById('taskTitle').value = '';
+            document.getElementById('taskDescription').value = '';
+            
+            newRow.querySelector('.delete-btn').addEventListener('click', function () {
+                pendingTasks.removeChild(newRow);
+            });
+            
+            newRow.querySelector('.complete-btn').addEventListener('click', function () {
+                const completedTasks = document.getElementById('completedTasks');
+                const completedRow = document.createElement('tr');
+                const completedOn = new Date().toLocaleString();
+                
+                completedRow.innerHTML = `
+                    <td>${title}</td>
+                    <td>${description}</td>
+                    <td>${completedOn}</td>
+                    <td>
+                        <button class="delete-btn">Delete</button>
+                    </td>
+                `;
+                
+                completedTasks.appendChild(completedRow);
+                pendingTasks.removeChild(newRow);
+                
+                completedRow.querySelector('.delete-btn').addEventListener('click', function () {
+                    completedTasks.removeChild(completedRow);
+                });
+            });
+            
+            newRow.querySelector('.edit-btn').addEventListener('click', function () {
+                document.getElementById('taskTitle').value = title;
+                document.getElementById('taskDescription').value = description;
+                pendingTasks.removeChild(newRow);
+            });
+        });
+        
+    </script>
+</body>
+</html>
